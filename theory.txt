@@ -1,0 +1,86 @@
+
+MultiThreading and Time Slicing Algorithm
+    - A single processor is able to serve multiple threads
+    - 1such way to do is using the time slicing algorithm
+    - here the processor executes each thread for sometime before it switches to other thread (concurrent execution of threads)
+
+Benefits of multi-threading
+    - design more responsive applications
+        - we can do multiple operations concurrently
+    - Better resource utilization
+        - we can use utilize multiple cores of a processor using multiple threads
+    - overall we can improve performance using multiple cores, processors using multithreading, parallel computing
+
+Disadvantages of multi-threading
+    - Synchronization
+        - threads belonging to a given process share common memory which needs to have synchronized access to keep consistency of the data
+    - Difficult to design multithreaded applications, easy to introduce bugs
+        - frameworks like fork/join takes cares of these issues to some extent
+    - multithreading involves expensive operations
+        - switching between the threads involves saving the context of current thread in execution and loading context of different thread
+
+lifecycle of a thread - Thread state
+    - NEW state: from initialization of thread till we call the start() method on the thread
+    - RUNNABLE state: after calling start() method on thread; when the thread is executing its task
+    - WAITING state: when a thread is waiting(eg: for other thread to finish, wait() & sleep() methods); this thread can go back to RUNNABLE state when other thread gives signal to is
+    - DEAD state: after the thread finishes its task
+
+Thread & Runnable
+    - Runnable is a Functional interface with run() method
+    - Thread implements Runnable interface
+    - 2 ways of creating a thread
+        - By creating a Thread object ; Thread t1 = new Thread(() -> { /* LOGIC */ });
+        - By extending Thread class and overriding the run() method of Runnable interface
+
+Thread
+    - sleep(long millis) sleeps the thread for given amount of millis
+    - join() waits for the thread to die
+    - wait() thread goes into wait state, releases the lock so that other threads can acquire locks and execute tasks
+    - notify() used to notify the thread in wait state, to continue execution of task
+
+volatile keyword
+    - makes sure that the attr is stored in RAM(and not in cache, due to performance reasons)
+    - makes sure that data remain consistent across different threads
+
+Deadlock
+    - A situation in which a process/thread acquires a lock on a resource and is waiting for another thread which inturn is waiting for other thread to release a resource.
+    - Here 2 or more threads have acquired locks on resources required by other threads which are waiting for these resources.
+    - A deadlock can be represent as a directed graph, that has a cycle. It can be identified using dfs.
+
+Livelock
+    - When threads become too busy responding to other threads, that they are not able to finish their task.
+    - Here the threads are not blocked(like in deadllock), they are just too busy responding to each other that they hardly make any progress on their task.
+
+Atomic Operation
+    - An atomic operation is an operation which is performed as a single unit of work without the possibility of interference from other operations/threads.
+
+Synchronized keyword
+    - One of the ways to manage access to an object is to use locks. This can be achieved by using the synchronized keyword in the method signature.
+
+Reentrant lock
+    - Reentrant Locks are provided in Java to provide synchronization with greater flexibility as compared to Synchronized keyword
+    - Reentrant lock implements Lock interface
+    - ReentrantLock allow threads to enter into lock on a resource more than once. When the thread first enters into lock, a hold count is set to one. Before unlocking the thread can re-enter into lock again and every time hold count is incremented by one. For every unlock request, hold count is decremented by one and when hold count is 0, the resource is unlocked.
+    - Reentrant Locks also offer a fairness parameter, by which the lock would abide by the order of the lock request i.e. after a thread unlocks the resource, the lock would go to the thread which has been waiting for the longest time. This fairness mode is set up by passing true to the constructor of the lock.
+    - https://stackoverflow.com/questions/11821801/why-use-a-reentrantlock-if-one-can-use-synchronizedthis
+
+Semaphore
+    - semaphores are variables or adt, used to maintain a count of no. of units of resources available
+    - counting, binary(mutex) semaphores
+    - acquire(), release()
+
+Mutex
+    - Binary semaphore
+
+lock vs Semaphore vs Mutex
+    - https://stackoverflow.com/questions/2332765/lock-mutex-semaphore-whats-the-difference#:~:text=A%20lock%20is%20the%20same,threads%20of%20one%20single%20process.
+    - https://stackoverflow.com/questions/9427276/what-does-mutex-and-semaphore-actually-do/24586803#24586803
+    - https://stackoverflow.com/questions/23511058/difference-between-mutex-semaphore-spin-locks/24582076#24582076
+
+    - A lock allows only one thread to enter the part that's locked and the lock is not shared with any other processes.
+    - A mutex is the same as a lock but it can be system wide (shared by multiple processes).
+    - A semaphore does the same as a mutex but allows x number of threads to enter, this can be used for example to limit the number of cpu, io or ram intensive tasks running at the same time.
+
+
+
+
