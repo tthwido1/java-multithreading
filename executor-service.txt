@@ -1,0 +1,98 @@
+
+// Running code asynchronously
+1. using os-thread
+public static void main(String[] args) {
+    // create a thread(os-thread) to run code asynchronously
+    Thread thread = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            // do your thing asynchronously
+        }
+    });
+    thread.start(); // start the thread, run() is executed
+    // meanwhile continue with the main thread
+}
+
+2. using ExecutorService
+public static void main(String[] args) {
+    // create a thread-pool
+    // ThreadPool uses BlockingQueue(thread-safe queue) to store the tasks
+    // these tasks are picked up by the threads concurrently and executed
+    // since the threads pick up the tasks from the queue concurrently we need the queue to be thread-safe
+        ExecutorService executorService = Executors.newFixedThreadPool(10); // pool of 10 threads
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                // do your thing asynchronously
+            }
+        });
+        // meanwhile continue with the main thread
+}
+
+public static void main(String[] args) {
+    ExecutorService executorService = Executors.newFixedThreadPool(10); // pool of 10 threads
+    Future<Integer> future = executorService.submit(new Callable<Integer>() {
+        @Override
+        public Integer call() throws Exception {
+            return new Integer(3);
+        }
+    });
+    // do some unrelated operations
+    try {
+        Integer val = future.get(); // blocking operation
+        // future.cancel(interruptThreadIfRunning = true) - cancels the task, if task is not yet picked up by thread, else it interrupts the thread
+        // future.isCancelled() // true if task is cancelled
+        // future.isCompleted() // true is task is completed
+    } catch(Exception e) {
+        // handle exception here
+    }
+}
+
+// Pool Size
+// Pool Size = no of cores in processor, for CPU intensive tasks
+// int nofCores = Runtime.getRuntime().availableProcessors();
+// ExecutorService executorService = Executors.newFixedThreadPool(nofCores);
+// Pool Size = high number, for IO intensive tasks
+
+// Types of ThreadPools
+// 1. FixedThreadPool - fixed no of threads, in thread pool
+// ExecutorService executerService = Executors.newFixedThreadPool(10);
+// 2. CachedThreadPool - uses a synchronous queue to store a single task at a time, it looks for the thread which is free in the thread pool(else creates a new thread if all threads are busy) and assign this task to it. It automatically destroys a thread if its idle for more than 60seconds.
+// ExecutorService executerService = Executors.newCachedThreadPool();
+// 3. ScheduledThreadPool - schedule the task to run based on time delay(trigger, fixedRate, fixedDelay), uses a delay queue
+// ExecutorService executerService = Executors.newScheduledThreadPool(10);
+// executorService.schedule(new Task(), delay = 10, SECONDS) // run this task after 10seconds
+// executorService.scheduleAtFixedRate(new Task(), initialDelay = 5, period = 10, SECONDS) // run this task every 10seconds(waits 5sec for the first time)
+// executorService.scheduleAtFixedDelay(new Task(), initialDelay = 5, delay = 15, SECONDS) // after every task wait for 15sec before running it again(waits 5sec for the first time)
+// 4. SingleThreadedPool - size of pool is thread, used to execute task sequentially
+
+            FixedThreadPool     CachedThreadPool    ScheduledThreadPool     SingleThreadedPool
+corePoolSize   constr-arg       NA                  constr-arg              1
+maxPoolSize    constr-arg       Integer.MAX_VALUE   Integer.MAX_VALUE       1
+keepAliveTime  NA               60sec               60sec                   NA
+
+Note: corePool threads are never killed, unless allowCoreThreadTime(boolean) is set to true
+
+// Types of Queue
+1. LinkedBlockingQueue
+2. SynchronousQueue
+3. DelayedWorkQueue
+4. ArrayBlockingQueue - if queue gets full, then a new thread is created for each new task
+FixedThreadPool, SingleThreadPool - LinkedBlockingQueue(not array because its limited by size, but the tasks are added and removed from queue randomly)
+CachedThreadPool - SynchronousQueue(size 1), since a new thread is immediately created for each new task, so no need a place to store tasks
+ScheduledThreadPool - DelayedWorkQueue, special queue which returns task based on time at which they are expired
+
+// Thread Rejection Policy
+If there are no threads to execute a task then reject the task based on below 4 policies
+1. AbortPolicy - throws a runtime exception called RejectedExecutionException()
+2. DiscardPolicy - simply rejects the task, no notification sent to main thread
+3. DiscardOldestPolicy - deletes the oldest task in the queue, and adds the incoming task to the queue
+4. CallerRunsPolicy - executes the task on caller thread itself
+
+// Lifecycle of ThreadPool
+1. executorService.shutdown() - initiates the shutdown, new tasks submitted are ignored
+2. executorService.isShutdowm() - true, if shutdown is initiated
+3. executorService.isTerminated() - true, if all the tasks in queue are executed
+4. executorService.awaitTermination(time=10, SECONDS) - block until all tasks are executed, or the specified timeout occurs
+5. executorService.shutdownNow() - initiates shutdown, executes all tasks which are currently operated by threads and returns List<Runnables> of all the tasks present in the queue without executing them
+
