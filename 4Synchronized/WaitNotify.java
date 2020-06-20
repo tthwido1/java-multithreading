@@ -42,7 +42,7 @@ class ProducerConsumer {
         Thread.sleep(1000); // so that producer runs first
         synchronized (this) {
             System.out.println("T2 consumes");
-            notify(); // Thread1 resumes only after this method execution is over and not immediately after notify()
+            notify(); // Thread1 resumes only after this block execution is over and not immediately after notify()
             Thread.sleep(1000);
             System.out.println("T2 exit");
         }

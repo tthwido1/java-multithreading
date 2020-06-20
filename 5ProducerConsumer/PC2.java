@@ -4,7 +4,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class PC2 { // has BUG
+public class PC2 { // fixed the BUG, use lock before condition.signal(), condition.wait()
     public static void main(String[] args) {
         PCLockHelper pc = new PCLockHelper();
         Thread thread1 = new Thread(() -> {
@@ -51,12 +51,15 @@ class PCLockHelper {
                 System.out.println("T1 Adding val: " + val);
                 list.add(this.val);
                 rlock.unlock();
-                condition.signal();
             } else {
                 System.out.println("T1 List full, waiting ...");
                 this.val = 0;
+                rlock.lock();
+                condition.signal();
                 condition.await();
+                rlock.unlock();
             }
+            Thread.sleep(500);
         }
     }
 
@@ -65,13 +68,16 @@ class PCLockHelper {
         while (true) {
             if (list.isEmpty()) {
                 System.out.println("T2 Nothing to consume, so wait ...");
+                rlock.lock();
+                condition.signal();
                 condition.await();
+                rlock.unlock();
             } else {
                 rlock.lock();
                 System.out.println("T2 Consume val: " + list.remove(0));
                 rlock.unlock();
-                condition.signal();
             }
+            Thread.sleep(500);
         }
     }
 }

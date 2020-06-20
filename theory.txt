@@ -22,7 +22,7 @@ Disadvantages of multi-threading
 lifecycle of a thread - Thread state
     - NEW state: from initialization of thread till we call the start() method on the thread
     - RUNNABLE state: after calling start() method on thread; when the thread is executing its task
-    - WAITING state: when a thread is waiting(eg: for other thread to finish, wait() & sleep() methods); this thread can go back to RUNNABLE state when other thread gives signal to is
+    - WAITING state: when a thread is waiting(eg: for other thread to finish, wait() & sleep() methods); this thread can go back to RUNNABLE state when other thread gives signal to it
     - DEAD state: after the thread finishes its task
 
 Thread & Runnable
@@ -81,6 +81,21 @@ lock vs Semaphore vs Mutex
     - A mutex is the same as a lock but it can be system wide (shared by multiple processes).
     - A semaphore does the same as a mutex but allows x number of threads to enter, this can be used for example to limit the number of cpu, io or ram intensive tasks running at the same time.
 
+Executors
+    - newSingleThreadedPool()
+    - newFixedThreadPool(int)
+    - newCachedThreadPool()
+    - newScheduledThreadPool(int)
+        - ExecutorService.schedule(new Task(), delay = 10, SECONDS);
+        - ExecutorService.scheduleAtFixedRate(new Task(), initialDelay = 5, period = 10, SECONDS) // run this task every 10seconds(waits 5sec for the first time)
+        - ExecutorService.scheduleAtFixedDelay(new Task(), initialDelay = 5, delay = 15, SECONDS) // after every task wait for 15sec before running it again(waits 5sec for the first time)
+    - shutdown() - initiates the shutdown, new tasks submitted are ignored
+    - isShutdowm() - true, if shutdown is initiated
+    - isTerminated() - true, if all the tasks in queue are executed
+    - awaitTermination(time=10, SECONDS) - block until all tasks are executed, or the specified timeout occurs
+    - shutdownNow() - initiates shutdown, executes all tasks which are currently operated by threads and returns List<Runnables> of all the tasks present in the queue without executing them
 
+Future
+    - get(), cancel(), isCancelled(), isCompleted()
 
 

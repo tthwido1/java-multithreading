@@ -40,7 +40,7 @@ public static void main(String[] args) {
     // do some unrelated operations
     try {
         Integer val = future.get(); // blocking operation
-        // future.cancel(interruptThreadIfRunning = true) - cancels the task, if task is not yet picked up by thread, else it interrupts the thread
+        // future.cancel(interruptThreadIfRunning = true) - cancels the task if task is not yet picked up by thread, else it interrupts the thread
         // future.isCancelled() // true if task is cancelled
         // future.isCompleted() // true is task is completed
     } catch(Exception e) {
