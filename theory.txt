@@ -63,6 +63,16 @@ Reentrant lock
     - ReentrantLock allow threads to enter into lock on a resource more than once. When the thread first enters into lock, a hold count is set to one. Before unlocking the thread can re-enter into lock again and every time hold count is incremented by one. For every unlock request, hold count is decremented by one and when hold count is 0, the resource is unlocked.
     - Reentrant Locks also offer a fairness parameter, by which the lock would abide by the order of the lock request i.e. after a thread unlocks the resource, the lock would go to the thread which has been waiting for the longest time. This fairness mode is set up by passing true to the constructor of the lock.
     - https://stackoverflow.com/questions/11821801/why-use-a-reentrantlock-if-one-can-use-synchronizedthis
+    - DefogTech - https://www.youtube.com/watch?v=ahBC69_iyk4&t=236s
+    - Lock rlock = new ReentrantLock(true);
+    - rlock.lock(), unlock(), trylock()
+    - ReentrantReadWriteLock wrlock = new ReentrantReadWriteLock();
+    - ReentrantReadWriteLock.ReadLock rlock = wrlock.readLock();
+    - ReentrantReadWriteLock.WriteLock wlock = wrlock.writeLock();
+
+Condition
+    - Condition condition = rlock.newCondition();
+    - condition.await(), signal(), signalAll()
 
 Semaphore
     - semaphores are variables or adt, used to maintain a count of no. of units of resources available
