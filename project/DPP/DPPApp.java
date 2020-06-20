@@ -11,14 +11,14 @@ public class DPPApp {
         DPPChopstick[] chopsticks = new DPPChopstick[DPPConstants.NOF_CHOPS];
 
         IntStream.range(0, DPPConstants.NOF_CHOPS).forEach(id -> {
-            chopsticks[id] = new DPPChopstick(id, new ReentrantLock(true));
+            chopsticks[id] = new DPPChopstick(id);
         });
 
         ExecutorService executorService = Executors.newFixedThreadPool(DPPConstants.NOF_PHIL);
         try {
             IntStream.range(0, DPPConstants.NOF_PHIL).forEach(id -> {
                 philosophers[id] = new DPPPhilosopher
-                        (id, chopsticks[(id + DPPConstants.NOF_CHOPS - 1) % DPPConstants.NOF_CHOPS], chopsticks[id]);
+                        (id, chopsticks[id], chopsticks[(id + 1) % DPPConstants.NOF_CHOPS]);
                 executorService.submit(philosophers[id]);
             });
             Thread.sleep(DPPConstants.SIMULATION_TIME_IN_MILLIS);
@@ -29,13 +29,16 @@ public class DPPApp {
             e.printStackTrace();
         } finally {
             executorService.shutdown();
-            if (!executorService.isTerminated()) {
+            while (!executorService.isTerminated()) {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
+            IntStream.range(0, DPPConstants.NOF_PHIL).forEach(id -> {
+                System.out.println(id + " " + philosophers[id].getEatingCounter());
+            });
         }
     }
 }
