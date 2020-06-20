@@ -98,4 +98,16 @@ Executors
 Future
     - get(), cancel(), isCancelled(), isCompleted()
 
+CountDownLatch
+    - This is used to synchronize one or more tasks by forcing them to wait for the completion of a set of operations being performed by other tasks
+    - Create a CountDownLatch with no of task to be performed, use countDown() on latch to decrement count once task is completed by thread
+    - call await() on latch to wait for all threads to complete their tasks
+    - A CountDownLatch is designed to be used in a one-shot fashion; the count cannot be reset
+    - If you need a version that resets the count, you can use a CyclicBarrier instead
+    - A typical use is to divide a problem into n independently solvable tasks and create a CountDownLatch with a value of n. When each task is finished it calls countDown() on the latch. Tasks waiting for the problem to be solved call await() on the latch to hold themselves back until it is completed
+
+CyclicBarriers
+    - A CyclicBarrier is used in situations where you want to create a group of tasks to perform work in parallel + wait until they are all finished before moving on to the next step
+    - CountDownLatch: one-shot event CyclicBarrier: it can be reused over and over again (CyclicBarrier.reset())
+    - cyclicBarrier has a barrier action: a runnable, that will run automatically when the count reaches 0
 
