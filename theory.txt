@@ -50,6 +50,7 @@ Deadlock
 Livelock
     - When threads become too busy responding to other threads, that they are not able to finish their task.
     - Here the threads are not blocked(like in deadllock), they are just too busy responding to each other that they hardly make any progress on their task.
+    - https://stackoverflow.com/questions/1036364/good-example-of-livelock
 
 Atomic Operation
     - An atomic operation is an operation which is performed as a single unit of work without the possibility of interference from other operations/threads.
